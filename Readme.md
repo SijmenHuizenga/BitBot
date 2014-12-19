@@ -12,7 +12,7 @@ In het mapje controllers zitten alle hardware aansturings klasse, en in het mapj
 project specefieke klasse. De uitwerking van deze klasse (de .cpp bestanden) zijn te vinden in het mapje `src`.
 
 
-Opdarcht
+Opdracht
 -----
 Alternatieve eindopdracht met Boebot: Komeet-onderzoeksrobot
 
