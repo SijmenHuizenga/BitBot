@@ -1,0 +1,8 @@
+.settings
+arduino
+Lib
+Release
+.cproject
+.ino.cpp
+.project
+spec.d
