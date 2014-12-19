@@ -1,5 +1,5 @@
 /*
- * LDRControl.cpp
+ * LedMatrixControl.cpp
  *
  *  Created on: 19 dec. 2014
  *      Author: Sijmen

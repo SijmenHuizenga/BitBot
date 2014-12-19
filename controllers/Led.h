@@ -1,3 +1,10 @@
+/*
+ * Led.h
+ *
+ *  Created on: 19 dec. 2014
+ *      Author: Sijmen
+ */
+
 #ifndef LedControl_h
 #define LedControl_h
 

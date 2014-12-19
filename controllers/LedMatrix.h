@@ -1,3 +1,10 @@
+/*
+ * LedMatrix.h
+ *
+ *  Created on: 19 dec. 2014
+ *      Author: Sijmen
+ */
+
 #ifndef SRC_MATRIXCONTROL_H_
 #define SRC_MATRIXCONTROL_H_
 

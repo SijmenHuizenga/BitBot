@@ -1,5 +1,5 @@
 /*
- * PotentioMeterControl.h
+ * PotentioMeter.h
  *
  *  Created on: 19 dec. 2014
  *      Author: Sijmen
