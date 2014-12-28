@@ -22,7 +22,9 @@ void DrivingController::update(){
 		return;
 	}
 	unsigned long curMills = millis();
-	if(curMills - movementStartMillis >= route->movements[movementNr]->time){
+	if(curMills - movementStartMillis > route->movements[movementNr].time){
+		Serial.println("Next Movement Starting Now...");
+		movementStartMillis = curMills;
 		movementNr++;
 		if(movementNr >= route->movementsAmount){
 			if(route->repeat){
@@ -33,18 +35,19 @@ void DrivingController::update(){
 				stopRouteExecution();
 				return;
 			}
-			motorL->setSpeed(route->movements[movementNr]->leftSpeed);
-			motorR->setSpeed(route->movements[movementNr]->rightSpeed);
 		}
+		motorL->setSpeed(route->movements[movementNr].leftSpeed);
+		motorR->setSpeed(route->movements[movementNr].rightSpeed);
 	}
 }
 void DrivingController::setRoute(Route* route_){
+	Serial.println("at setRoute: " + String(route->movements[movementNr].time));
 	route = route_;
 	movementNr = 0;
 	movementStartMillis = millis();
 
-	motorL->setSpeed(route->movements[movementNr]->leftSpeed);
-	motorR->setSpeed(route->movements[movementNr]->rightSpeed);
+	motorL->setSpeed(route->movements[movementNr].leftSpeed);
+	motorR->setSpeed(route->movements[movementNr].rightSpeed);
 }
 void DrivingController::stopRouteExecution(){
 	route = NULL;
@@ -53,5 +56,4 @@ void DrivingController::stopRouteExecution(){
 	motorL->setSpeed(0);
 	motorR->setSpeed(0);
 }
-
 

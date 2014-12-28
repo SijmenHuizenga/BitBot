@@ -19,7 +19,7 @@
  * De pin op de arduino waar de motoren op zijn aagesloten.s
  */
 const byte MOTOR_L_PIN = 13;
-const byte MOTOR_R_PIN = 14;
+const byte MOTOR_R_PIN = 12;
 
 /**
  *  Wat zijn deze klasse?
@@ -45,31 +45,48 @@ const byte MOTOR_R_PIN = 14;
  * opnieuw gestart, of hij wordt gestopt. Dit wordt aangegeven door een boolean.
  * Ook kan tegen de drivingController gezegt worden dat de huidigge route gestopt
  * moet worden, of dat er een nieuwe route gestart moet worden.
+ *
+ * De Movement en Route klassen zijn hebben geen functionaliteit. Ze zijn alleen
+ * bedoeld om een aantal variabelen te grouperen. Deze klasse hebben dus alleen
+ * een constructor.
  */
 
 class Movement {
 	public:
+		int leftSpeed;
+		int rightSpeed;
 		unsigned int time;
-		unsigned int leftSpeed;
-		unsigned int rightSpeed;
 
-		Movement(int, int, int);
+		Movement(unsigned int time_, int leftSpeed_, int rightSpeed_){
+			time = time_;
+			leftSpeed = leftSpeed_;
+			rightSpeed = rightSpeed_;
+		}
+		Movement(){
+			time = 0;
+			leftSpeed = 0;
+			rightSpeed = 0;
+		}
 
-		static Movement* getTurnLeftMovement() {
-			return new Movement(1000, 30, 100);
+		static Movement getTurnLeftMovement() {
+			return Movement(4000, 30, 100);
 		}
-		;
-		static Movement* getTurnRightMovement() {
-			return new Movement(1000, 100, 30);
+		static Movement getTurnRightMovement() {
+			return Movement(4000, 100, 30);
 		}
-		;
 };
 
 class Route {
 	public:
 		bool repeat;
 		byte movementsAmount;
-		Movement* movements[];
+		Movement* movements;
+
+		Route(bool repeat_, byte movementsAmount_, Movement* movements_){
+			repeat = repeat_;
+			movementsAmount = movementsAmount_;
+			movements = movements_;
+		}
 };
 
 class DrivingController {
@@ -79,7 +96,7 @@ class DrivingController {
 		Route* route;
 
 		//route execution:
-		unsigned int movementNr;
+		byte movementNr;
 		unsigned long movementStartMillis;
 
 	public:
@@ -106,7 +123,5 @@ class DrivingController {
 		 */
 		void stopRouteExecution();
 };
-
-
 
 #endif /* HEADERS_DRIVINGCONTROLLER_H_ */

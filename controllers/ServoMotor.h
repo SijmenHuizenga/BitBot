@@ -9,14 +9,28 @@
 #define HEADERS_SERVOMOTOR_H_
 
 #include <Servo.h>
+#include "Arduino.h"
 
 class ServoMotor{
   private:
     int curSpeed;
     bool inverted;
 
-    static const int off = 1505;  //what is the zero point?
-    static const int marge = 200; //how much up can i go?
+    /**
+     * At what microseconds is the servo off:
+     */
+    static const int off = 1505;
+    /**
+     * How much does the servo go up from the off
+     * point until it reaches max speed.
+     *
+     * According to the documentation at
+     * http://learn.parallax.com/node/207 is the
+     * max speed at 1700us. But the upper half
+     * is horizontal. This whould kill our calculations
+     * so here is choosen to not use this upper part.
+     */
+    static const int marge = 100;
 
     Servo* servo;
 
@@ -35,7 +49,11 @@ class ServoMotor{
     /**
      * Sets the speed of the motor.
      * This speed can have the following values:
-     * set speed in persentage. From 0 to 100.
+     * set speed in persentage. From -100 to 100.
+     *  +100 is full speed forward
+     *  0 off
+     *  -100 is full speed backwards
+     *
      */
     void setSpeed(int);
     /**
