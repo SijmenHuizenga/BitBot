@@ -26,6 +26,13 @@ void setup() {
 void loop() {
 //	c->update();
 	dev->update();
+	dev->min.x =  min(dev->readings.x, dev->min.x);
+	dev->min.y =  min(dev->readings.y, dev->min.y);
+	dev->min.z =  min(dev->readings.z, dev->min.z);
 
-	delay(100);
+	dev->max.x =  max(dev->readings.x, dev->max.x);
+	dev->max.y =  max(dev->readings.y, dev->max.y);
+	dev->max.z =  max(dev->readings.z, dev->max.z);
+
+
 }

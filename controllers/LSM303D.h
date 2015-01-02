@@ -16,17 +16,18 @@ class LSM303D {
 	public:
 		//static variables
 		static const byte i2cAddress = 0b0011101; //i2c address of the device
-		static const unsigned int update_delay = 1000; //ms between updates
+		static const unsigned int update_delay = 100; //ms between updates
 
 	public:
-		Vector<int> m_max; // maximum magnetometer values, used for calibration
-		Vector<int> m_min; // minimum magnetometer values, used for calibration
+		Vector<unsigned int> max; // maximum magnetometer values, used for calibration
+		Vector<unsigned int> min; // minimum magnetometer values, used for calibration
 		void writeReg(byte reg, byte value);
 
 		unsigned long lastUpdate;
 		bool isReceiving;
 	public:
-		Vector<int> magReadings; // magnetometer readings
+		Vector<unsigned int> readings; // magnetometer readings
+
 
 		LSM303D(void);
 		void readMag(void);
