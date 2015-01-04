@@ -1,18 +1,19 @@
 
-#include <LSM303D.h>
+#include <LSM303D_MAG.h>
 #include "headers/DrivingController.h"
 #include <Wire.h>
 
 DrivingController* c;
-
-LSM303D* dev;
+LSM303DMag* mag;
 
 void setup() {
 	Serial.begin(9600);
 	Wire.begin();
-	dev = new LSM303D();
 
-//	c = new DrivingController();
+
+	c = new DrivingController();
+
+	mag = new LSM303DMag();
 //
 //	Movement* arr = new Movement[2]();
 //	arr[0] = Movement::getTurnLeftMovement();
@@ -24,15 +25,6 @@ void setup() {
 }
 
 void loop() {
-//	c->update();
-	dev->update();
-	dev->min.x =  min(dev->readings.x, dev->min.x);
-	dev->min.y =  min(dev->readings.y, dev->min.y);
-	dev->min.z =  min(dev->readings.z, dev->min.z);
-
-	dev->max.x =  max(dev->readings.x, dev->max.x);
-	dev->max.y =  max(dev->readings.y, dev->max.y);
-	dev->max.z =  max(dev->readings.z, dev->max.z);
-
-
+	c->update();
+	mag->update();
 }
