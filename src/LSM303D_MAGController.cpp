@@ -12,6 +12,11 @@ LSM303DMag::LSM303DMag(void) {
 	writeReg(0x26, 0x00);
 	lastUpdate = 0;
 	isReceiving = false;
+
+	minX = -1811;
+	maxX = 3102;
+	minY = -2548;
+	maxY = 1573;
 }
 
 void LSM303DMag::writeReg(byte reg, byte value) {
@@ -31,17 +36,30 @@ void LSM303DMag::update(){
 		byte zl = Wire.read();
 		byte zh = Wire.read();
 
-		//raw values are between -32767 and 32767
-		float x = (float) (xh << 8 | xl);
-		float y = (float) (yh << 8 | yl);
-		float z = (float) (zh << 8 | zl);
+		//raw values are between min and max int values
+		int x = (int) (xh << 8 | xl);
+		int y = (int) (yh << 8 | yl);
+		int z = (int) (zh << 8 | zl);
 
-		r = sqrt(x*x+y*y+z*z);
-		t = acos(z/r);
-		f = atan(y/x);
+		//receiving from int min to int max
+		x = map(x, minX, maxX, -16384, 16384);
+		y = map(y, minY, maxY, -16384, 16384);
 
-		Serial.println(String(r) + ";" + String(t) + ";" + String(f)+";"+String(x) + ";" + String(y) + ";" + String(z));
-
+		float s = atan(((float)y)/((float)x));
+		s = degrees(s);
+		if(x > 0 && y > 0){
+			hoek = 90 - s;
+		}else if(x > 0 && y < 0){
+			hoek = 90 + abs(s);
+		}else if(x < 0 && y < 0){
+			hoek = 180 + (90 - s);
+		}else if(x < 0 && y > 0){
+			hoek = 270 + abs(s);
+		}else{
+			//could not find. Wait for next update.
+			//I am aware that at x==0 and y==0
+			//nothing is detected. This is on purpose!
+		}
 		isReceiving = false;
 		lastUpdate = curMils;
 	}else if(isReceiving && curMils - lastUpdate - update_delay > 1000){
@@ -59,7 +77,23 @@ void LSM303DMag::update(){
 	}
 }
 
-void LSM303DMag::heading(){
-
+Direction LSM303DMag::heading(){
+	if(hoek >= 337 || hoek < 22)
+		return N;
+	if(hoek >= 22  && hoek < 67)
+		return WN;
+	if(hoek >= 67 && hoek < 112)
+		return W;
+	if(hoek >= 112&& hoek < 153)
+		return SW;
+	if(hoek >= 153&& hoek < 202)
+		return S;
+	if(hoek >= 202&& hoek < 247)
+		return ES;
+	if(hoek >= 247&& hoek < 292)
+		return E;
+	if(hoek >= 292&& hoek < 337)
+		return NE;
+	return N;
 }
 

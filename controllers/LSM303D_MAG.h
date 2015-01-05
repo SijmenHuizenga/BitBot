@@ -4,15 +4,22 @@
 #include <Arduino.h>
 #include <math.h>
 
-/**
- * This type holds an x, y and z of the specified type
- */
-template<typename T> struct Vector {
-	T x, y, z;
-	String toString() {
-		return String(x) + ";" + String(y) + ";" + String(z);
-	}
+enum Direction{
+	N, WN, W, SW, S, ES, E, NE
 };
+
+static char DirToString(Direction d){
+	switch (d) {
+		case N: return 'N'; break;
+		case WN: return '1'; break;
+		case W: return 'W'; break;
+		case SW: return '2'; break;
+		case S: return 'S'; break;
+		case ES: return '3'; break;
+		case E: return 'E'; break;
+		case NE: return '4'; break;
+	}
+}
 
 class LSM303DMag {
 	public:
@@ -20,16 +27,27 @@ class LSM303DMag {
 		static const byte i2cAddress = 0b0011101; //i2c address of the device
 		static const unsigned int update_delay = 100; //ms between updates
 
+		static int rotate360(int x, int toRotate){
+			x += toRotate;
+			if(x > 360)
+				x-= 360;
+			if(x < 0)
+				x = 360 + x;
+			return x;
+		}
 	private:
 		void writeReg(byte reg, byte value);
 		unsigned long lastUpdate;
 		bool isReceiving;
-		float r, t, f;
+		int hoek;
+
+		float minX , maxX, minY, maxY;
 	public:
-		Vector<int> readings; // magnetometer readings
 		LSM303DMag(void);
 		void update();
-		void heading();
+		Direction heading();
+		int getHoek;
+
 
 };
 

@@ -27,4 +27,5 @@ void setup() {
 void loop() {
 	c->update();
 	mag->update();
+
 }
