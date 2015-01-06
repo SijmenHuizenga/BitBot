@@ -23,36 +23,32 @@ void DrivingController::update(){
 		return;
 	}
 	if(route->movements[movementNr]->isDone()){
-//		Serial.println("Next Movement Starting Now...");
-//		movementNr++;
-//		if(movementNr >= route->movementsAmount){
-//			if(route->repeat){
-//				//end of route, should repeat
-//				movementNr = 0;
-//			}else{
-//				//end of route, no repeat
-//				stopRouteExecution();
-//				return;
-//			}
-//		}
-//		motorL->setSpeed(route->movements[movementNr]->leftSpeed);
-//		motorR->setSpeed(route->movements[movementNr]->rightSpeed);
-//		route->movements[movementNr]->start();
+		Serial.println("Next Movement Starting Now...");
+		movementNr++;
+		if(movementNr >= route->movementsAmount){
+			if(route->repeat){
+				//end of route, should repeat
+				movementNr = 0;
+			}else{
+				//end of route, no repeat
+				stopRouteExecution();
+				return;
+			}
+		}
+		motorL->setSpeed(route->movements[movementNr]->getLeftSpeed());
+		motorR->setSpeed(route->movements[movementNr]->getRightSpeed());
+		route->movements[movementNr]->start();
 	}
 
 }
 
 void DrivingController::setRoute(Route* route_){
-	Serial.println("setRoute start");
-
 	route = route_;
-//	movementNr = 0;
-//
-//	motorL->setSpeed(route->movements[movementNr]->leftSpeed);
-//	motorR->setSpeed(route->movements[movementNr]->rightSpeed);
-//	route->movements[movementNr]->start();
+	movementNr = 0;
 
-	Serial.println("setRoute end");
+	motorL->setSpeed(route->movements[movementNr]->getLeftSpeed());
+	motorR->setSpeed(route->movements[movementNr]->getRightSpeed());
+	route->movements[movementNr]->start();
 }
 
 void DrivingController::stopRouteExecution(){
@@ -83,21 +79,23 @@ DegreeMovement::DegreeMovement(int turnDegree){
 
 	if(turnDegree < 0){
 		this->leftOrRight = true;
-		this->leftSpeed = 0;
-		this->rightSpeed = 60;
 	}else if(turnDegree > 0){
 		this->leftOrRight = false;
-		this->leftSpeed = 60;
-		this->rightSpeed = 0;
 	}else{
 		//it would be verry stupid if you did this.
 		Serial.println("You are stupid. #01");
 		return;
 	}
 }
+int DegreeMovement::getLeftSpeed(){
+	return this->leftOrRight ? 0 : 60;
+}
+int DegreeMovement::getRightSpeed(){
+	return this->leftOrRight ? 60 : 0;
+}
 
 void DegreeMovement::start(){
-	if(leftOrRight){//left
+	if(this->leftOrRight){//left
 		targetD = BitBot::rotate360(BitBot::getBot()->getMagMeter()->getHoek(), 360+turnAmount);
 	}else{//right
 		targetD = BitBot::rotate360(BitBot::getBot()->getMagMeter()->getHoek(), turnAmount);
@@ -105,11 +103,10 @@ void DegreeMovement::start(){
 }
 
 bool DegreeMovement::isDone(){
-//	int rightBorder = BitBot::rotate360(targetD, 10);
-//	int leftBorder = BitBot::rotate360(targetD, -10);
-//	int hoek = BitBot::getBot()->getMagMeter()->getHoek();
-//	Serial.println(String(rightBorder) + " : " + String(hoek) + " : " + String(leftBorder));
-//	return hoek < rightBorder && hoek > leftBorder;
+	int rightBorder = BitBot::rotate360(targetD, 10);
+	int leftBorder = BitBot::rotate360(targetD, -10);
+	int hoek = BitBot::getBot()->getMagMeter()->getHoek();
+	Serial.println(String(rightBorder) + " : " + String(hoek) + " : " + String(leftBorder));
+	return hoek < rightBorder && hoek > leftBorder;
 	return false;
 }
-

@@ -8,6 +8,7 @@
 #ifndef HEADERS_BITBOT_H_
 #define HEADERS_BITBOT_H_
 
+#include "Arduino.h"
 #include "DrivingController.h"
 #include "LSM303D_MAG.h"
 
@@ -20,16 +21,17 @@ class BitBot {
 		void setup();
 		void loop();
 		static BitBot* getBot();
-		LSM303DMag* getMagMeter(){
+		LSM303DMag* getMagMeter() {
 			return magMeter;
 		}
 
+
 	public:
-		static int rotate360(int x, int toRotate){
+		static int rotate360(int x, int toRotate) {
 			x += toRotate;
-			if(x > 360)
-				x-= 360;
-			if(x < 0)
+			if (x > 360)
+				x -= 360;
+			if (x < 0)
 				x = 360 + x;
 			return x;
 		}
@@ -37,6 +39,5 @@ class BitBot {
 //http://en.wikipedia.org/wiki/Singleton_pattern
 static BitBot* bitbotInstance = NULL;
 static bool inited = false;
-
 
 #endif /* HEADERS_BITBOT_H_ */

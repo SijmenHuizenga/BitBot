@@ -5,14 +5,14 @@
  *      Author: Sijmen
  */
 
-//static functions
 #include "BitBot.h"
 
 void BitBot::setup(){
-	Serial.println("Reached beginning of setup.");
+	delay(1);
 	magMeter = new LSM303DMag();
+	delay(1);
 	drivingController = new DrivingController();
-	Serial.println("Reached end of setup.");
+	delay(1);
 }
 
 void BitBot::loop(){
@@ -20,7 +20,7 @@ void BitBot::loop(){
 	drivingController->update();
 	if(!set){
 		set = true;
-		Movement* arr[2];
+		Movement** arr;
 		arr[0] = new DegreeMovement(90);
 		arr[1] = new DegreeMovement(-90);
 		Route* route = new Route(false, 2, arr);
@@ -30,7 +30,8 @@ void BitBot::loop(){
 
 BitBot* BitBot::getBot(){
 	if(!inited){
-		Serial.println("Craeting new instance");
+		Serial.println("new");
+		delay(1);
 		inited = true;
 		bitbotInstance = new BitBot();
 	}

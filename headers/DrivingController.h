@@ -55,13 +55,10 @@ const byte MOTOR_R_PIN = 12;
 //http://stackoverflow.com/questions/127426/gnu-compiler-warning-class-has-virtual-functions-but-non-virtual-destructor
 class Movement {
 	public:
-		int leftSpeed;
-		int rightSpeed;
-
-		virtual ~Movement(){};
-
-		virtual void start(){};
-		virtual bool isDone(){return false;};
+		virtual void start();
+		virtual bool isDone();
+		virtual int getLeftSpeed();
+		virtual int getRightSpeed();
 };
 
 class TimedMovement: public Movement {
@@ -73,9 +70,11 @@ class TimedMovement: public Movement {
 
 
 		TimedMovement(unsigned int, int, int);
-		~TimedMovement(){};
 		void start();
 		bool isDone();
+		int getLeftSpeed();
+		int getRightSpeed();
+
 };
 
 class DegreeMovement: public Movement {
@@ -85,9 +84,10 @@ class DegreeMovement: public Movement {
 		bool leftOrRight; //true = left, false = right;
 
 		DegreeMovement(int turnDegree);
-		~DegreeMovement(){};
 		void start();
 		bool isDone();
+		int getLeftSpeed();
+		int getRightSpeed();
 };
 
 class Route {
