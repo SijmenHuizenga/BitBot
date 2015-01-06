@@ -8,6 +8,7 @@ enum Direction{
 	N, WN, W, SW, S, ES, E, NE
 };
 
+
 static char DirToString(Direction d){
 	switch (d) {
 		case N: return 'N'; break;
@@ -19,7 +20,8 @@ static char DirToString(Direction d){
 		case E: return 'E'; break;
 		case NE: return '4'; break;
 	}
-}
+	return 'N';
+};
 
 class LSM303DMag {
 	public:
@@ -27,14 +29,6 @@ class LSM303DMag {
 		static const byte i2cAddress = 0b0011101; //i2c address of the device
 		static const unsigned int update_delay = 100; //ms between updates
 
-		static int rotate360(int x, int toRotate){
-			x += toRotate;
-			if(x > 360)
-				x-= 360;
-			if(x < 0)
-				x = 360 + x;
-			return x;
-		}
 	private:
 		void writeReg(byte reg, byte value);
 		unsigned long lastUpdate;
@@ -46,7 +40,7 @@ class LSM303DMag {
 		LSM303DMag(void);
 		void update();
 		Direction heading();
-		int getHoek;
+		int getHoek(){return this->hoek;};
 
 
 };

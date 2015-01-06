@@ -12,11 +12,12 @@
 #ifndef HEADERS_DRIVINGCONTROLLER_H_
 #define HEADERS_DRIVINGCONTROLLER_H_
 
+#include "BitBot.h"
 #include "Arduino.h"
 #include "ServoMotor.h"
 
 /**
- * De pin op de arduino waar de motoren op zijn aagesloten.s
+ * De pin op de arduino waar de motoren op zijn aagesloten.
  */
 const byte MOTOR_L_PIN = 13;
 const byte MOTOR_R_PIN = 12;
@@ -51,38 +52,51 @@ const byte MOTOR_R_PIN = 12;
  * een constructor.
  */
 
+//http://stackoverflow.com/questions/127426/gnu-compiler-warning-class-has-virtual-functions-but-non-virtual-destructor
 class Movement {
 	public:
 		int leftSpeed;
 		int rightSpeed;
+
+		virtual ~Movement(){};
+
+		virtual void start(){};
+		virtual bool isDone(){return false;};
+};
+
+class TimedMovement: public Movement {
+	public:
+		int leftSpeed;
+		int rightSpeed;
+		unsigned long movementStartMillis;
 		unsigned int time;
 
-		Movement(unsigned int time_, int leftSpeed_, int rightSpeed_){
-			time = time_;
-			leftSpeed = leftSpeed_;
-			rightSpeed = rightSpeed_;
-		}
-		Movement(){
-			time = 0;
-			leftSpeed = 0;
-			rightSpeed = 0;
-		}
 
-		static Movement getTurnLeftMovement() {
-			return Movement(4000, 30, 100);
-		}
-		static Movement getTurnRightMovement() {
-			return Movement(4000, 100, 30);
-		}
+		TimedMovement(unsigned int, int, int);
+		~TimedMovement(){};
+		void start();
+		bool isDone();
+};
+
+class DegreeMovement: public Movement {
+	public:
+		unsigned int turnAmount;
+		unsigned int targetD;
+		bool leftOrRight; //true = left, false = right;
+
+		DegreeMovement(int turnDegree);
+		~DegreeMovement(){};
+		void start();
+		bool isDone();
 };
 
 class Route {
 	public:
 		bool repeat;
 		byte movementsAmount;
-		Movement* movements;
+		Movement** movements;
 
-		Route(bool repeat_, byte movementsAmount_, Movement* movements_){
+		Route(bool repeat_, byte movementsAmount_, Movement** movements_) {
 			repeat = repeat_;
 			movementsAmount = movementsAmount_;
 			movements = movements_;
@@ -97,8 +111,6 @@ class DrivingController {
 
 		//route execution:
 		byte movementNr;
-		unsigned long movementStartMillis;
-
 	public:
 		/**
 		 * initializer. Geen argumenten.
