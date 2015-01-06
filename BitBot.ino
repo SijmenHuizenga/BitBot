@@ -1,21 +1,25 @@
 #include <Wire.h>
-#include "BitBot.h"
+#include "Driving.h"
+#include "LSM303D_MAG.h"
+
+DrivingController* drivingController;
+LSM303DMag* magMeter;
 
 void setup() {
 	Serial.begin(9600);
 	Wire.begin();
-	Serial.println("a");
-	Serial.println(String(freeRam()));
-	BitBot::getBot()->setup();
-	Serial.println("freRam: " + String(freeRam()));
+
+	magMeter = new LSM303DMag();
+	drivingController = new DrivingController(magMeter->hoek);
+	drivingController->setFinishCallback(movementFinish);
+	drivingController->setTurn(-180);
 }
 
 void loop() {
-	BitBot::getBot()->loop();
+	magMeter->update();
+	drivingController->update();
 }
 
-static int freeRam() {
-	extern int __heap_start, *__brkval;
-	int v;
-	return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+void movementFinish(){
+	Serial.println("Movement Finished!");
 }

@@ -33,13 +33,14 @@ class LSM303DMag {
 		void writeReg(byte reg, byte value);
 		unsigned long lastUpdate;
 		bool isReceiving;
-		int hoek;
+
 
 		float minX , maxX, minY, maxY;
 	public:
 		LSM303DMag(void);
 		void update();
 		Direction heading();
+		int hoek;//public so it can be referensed to DrivingControllers
 		int getHoek(){return this->hoek;};
 
 
