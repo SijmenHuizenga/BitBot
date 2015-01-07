@@ -72,13 +72,19 @@ void AntiBounceButton::update() {
 		bounceCheckStart = curMils;
 	}else if(state == BOUNCE_TO_PRESS &&
 			curMils - bounceCheckStart >= msBounceCheck){
-		state = s == HIGH ? PRESSED : RELEASED;
-		if(this->callback != 0)
+		if(s == HIGH){
+			state = PRESSED;
 			this->callback();
+		}else{
+			state = RELEASED;
+		}
 	}else if(state == BOUNCE_TO_RELEASE &&
 			curMils - bounceCheckStart >= msBounceCheck){
-		state = s == LOW ? RELEASED : PRESSED;
-		if(this->callback != 0)
+		if(s == LOW){
+			state = RELEASED;
 			this->callback();
+		}else{
+			state = PRESSED;
+		}
 	}
 }

@@ -21,7 +21,9 @@ LedMatrix::LedMatrix(int adress) {
 }
 
 /**
- * brightness between 0 and 15
+ * brightness between 0 and 15 where 0 is
+ * 1/16 brightness
+ * and 15 is 16/16 brightness
  */
 void LedMatrix::setBrightness(int brightness) {
 	Wire.beginTransmission(this->adres);
@@ -30,19 +32,23 @@ void LedMatrix::setBrightness(int brightness) {
 }
 
 /**
- * amount between 1 and 7
+ * amount between 1 and 7 where:
+ * 1 = blink off
+ * 3 = 2 hz
+ * 5 = 0.5 hz
  */
 void LedMatrix::setBlink(int amount) {
 	Wire.beginTransmission(this->adres);
-	Wire.write(B00100000 + amount);
+	Wire.write(B10000000 + amount);
 	Wire.endTransmission();
 }
 
 /**
- * every one loves a smiley. So this function shows this smyle
- * to the display.
+ * Every one loves a smiley. So this function shows this smyle
+ * to the display. Wether the smily is happy or not can be
+ * said by the bool argument.
  */
-void LedMatrix::drawSmiley() {
+void LedMatrix::drawSmiley(bool happy) {
 	Wire.beginTransmission(this->adres);
 	Wire.write(0x00);
 
@@ -56,11 +62,17 @@ void LedMatrix::drawSmiley() {
 	Wire.write(0x00);
 	Wire.write(rightCycleShift(B10111101));
 	Wire.write(0x00);
-	Wire.write(rightCycleShift(B11000011));
+	if(happy)
+		Wire.write(rightCycleShift(B11000011));
+	else
+		Wire.write(rightCycleShift(B00111100));
 	Wire.write(0x00);
 	Wire.write(rightCycleShift(B01111110));
 	Wire.write(0x00);
-	Wire.write(rightCycleShift(B00111100));
+	if(happy)
+		Wire.write(rightCycleShift(B00111100));
+	else
+		Wire.write(rightCycleShift(B11000011));
 	Wire.write(0x00);
 	Wire.endTransmission();
 }
