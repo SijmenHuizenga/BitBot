@@ -59,20 +59,32 @@ void LedMatrix::drawSmiley(bool happy) {
 	Wire.write(0x00);
 	Wire.write(rightCycleShift(B11111111));
 	Wire.write(0x00);
-	Wire.write(rightCycleShift(B10111101));
+	if(happy)
+		Wire.write(rightCycleShift(B10111101));
+	else
+		Wire.write(rightCycleShift(B11000011));
 	Wire.write(0x00);
 	if(happy)
 		Wire.write(rightCycleShift(B11000011));
 	else
-		Wire.write(rightCycleShift(B00111100));
+		Wire.write(rightCycleShift(B10111101));
 	Wire.write(0x00);
 	Wire.write(rightCycleShift(B01111110));
 	Wire.write(0x00);
-	if(happy)
-		Wire.write(rightCycleShift(B00111100));
-	else
-		Wire.write(rightCycleShift(B11000011));
+	Wire.write(rightCycleShift(B00111100));
 	Wire.write(0x00);
+	Wire.endTransmission();
+}
+
+/**
+ * draw void onto the led matrix
+ */
+void LedMatrix::drawEmptyness(){
+	Wire.beginTransmission(this->adres);
+	Wire.write(0x00);
+	for(int i = 0; i < 16; i++){
+		Wire.write(0x00);
+	}
 	Wire.endTransmission();
 }
 

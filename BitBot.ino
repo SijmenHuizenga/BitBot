@@ -8,6 +8,7 @@
 #include "BitBotSates.h"
 #include "Thermometer.h"
 #include "Led.h"
+#include "TimedAction.h"
 
 DrivingController* drivingController;
 LightDependentResistor* ldr;
@@ -18,6 +19,8 @@ LedMatrix* matrix;
 AntiBounceButton* spriet;
 Buzzer* buzz;
 
+TimedAction* fiveSecondTimer;
+
 //wat is de huidigge bitbot status?
 BitBotState status;
 
@@ -27,6 +30,9 @@ BitBotState voorBotsingStatus;
 int returnDegree;
 
 int lastLightValue;
+
+int lastDegree = 0;
+int lastLight = 0;
 
 void setup() {
 	Serial.begin(9600);
@@ -42,6 +48,7 @@ void setup() {
 	matrix->setBlink(1);
 	matrix->setBrightness(5);
 	matrix->drawSmiley(false);
+	matrix->drawEmptyness();
 
 	spriet = new AntiBounceButton(10);
 	spriet->setCallback(sprietCallback);
@@ -58,6 +65,10 @@ void setup() {
 	buzz = new Buzzer(11);
 	buzz->setTone(494);
 	buzz->setOnTime(50);
+
+	fiveSecondTimer = new TimedAction();
+	fiveSecondTimer->setCallback(fiveSecondCallback);
+	fiveSecondTimer->setDelay(5000);
 
 	status = LICHTZOEKEN_STARTING;
 	lastLightValue = ldr->getLuxValue();
@@ -121,6 +132,10 @@ void movementFinish(){
 				status = DANCE;
 			}
 			break;
+		case DANCE:
+			matrix->drawSmiley(random(0,1));
+			drivingController->setTurn(random(-359, 359));
+			break;
 		default:
 			break;
 	}
@@ -146,6 +161,18 @@ void thermCallback(){
 
 void ldrCallback(){
 
+}
+
+void fiveSecondCallback(){
+	if(lastDegree != 0 && (abs(lastDegree - therm->getCurDegrees()) > 5 || abs(lastLight - ldr->getLuxValue()) > 5)){
+		matrix->drawSmiley(false);
+	}else if(therm->getCurDegrees()>23){
+		matrix->drawSmiley(true);
+	}else{
+		matrix->drawEmptyness();
+	}
+	lastDegree = therm->getCurDegrees();
+	lastLight = ldr->getLuxValue();
 }
 
 void compassCallback(){

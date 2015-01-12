@@ -17,6 +17,7 @@ class LedMatrix {
     LedMatrix(int);
     void setBrightness(int);
     void setBlink(int);
+    void drawEmptyness();
     void drawSmiley(bool);
     void drawLetter(char);
     void drawMatrix(byte bits[]);
