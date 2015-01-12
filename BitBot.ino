@@ -57,6 +57,7 @@ void setup() {
 
 	buzz = new Buzzer(11);
 	buzz->setTone(494);
+	buzz->setOnTime(50);
 
 	status = LICHTZOEKEN_STARTING;
 	lastLightValue = ldr->getLuxValue();
@@ -138,7 +139,9 @@ void sprietCallback(){
 }
 
 void thermCallback(){
-
+	//zie formule: https://github.com/SijmenHuizenga/BitBot/issues/8
+	Serial.println(therm->getCurDegrees());
+	buzz->setOffTime((30-therm->getCurDegrees())*100);
 }
 
 void ldrCallback(){
