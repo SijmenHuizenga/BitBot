@@ -13,7 +13,6 @@
 
 LedMatrix::LedMatrix(int adress) {
 	this->adres = adress;
-	Wire.begin();
 
 	Wire.beginTransmission(this->adres);
 	Wire.write(0x21);

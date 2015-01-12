@@ -17,6 +17,7 @@ LSM303DMag::LSM303DMag(void) {
 	maxX = 3102;
 	minY = -2548;
 	maxY = 1573;
+	lastVal = -1;
 }
 
 void LSM303DMag::writeReg(byte reg, byte value) {
@@ -60,11 +61,18 @@ void LSM303DMag::update(){
 			//I am aware that at x==0 and y==0
 			//nothing is detected. This is on purpose!
 		}
+		hoek = add360(hoek, 90);
 		isReceiving = false;
 		lastUpdate = curMils;
+
+		if(lastVal != hoek){
+			lastVal = hoek;
+			this->callback();
+		}
+
 	}else if(isReceiving && curMils - lastUpdate - update_delay > 1000){
 		//nothing received within 1000ms
-		Serial.println("Had Timeout!");
+		Serial.println("LSM303D had Timeout!");
 		isReceiving = false;
 		lastUpdate = curMils;
 	}else if(!isReceiving && curMils - lastUpdate > update_delay){
@@ -97,3 +105,6 @@ Direction LSM303DMag::heading(){
 	return N;
 }
 
+void LSM303DMag::setValueChangeCallback(void(*call)(void)){
+	this->callback = call;
+}

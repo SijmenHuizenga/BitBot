@@ -17,11 +17,10 @@ enum BitBotState{
 	NABOTSING_DRAAIEN_B,	//terug draaien
 
 	//tijdens lichtzoeken:
-	LICHTZOEKEN_X,		//lopen op de x ass
-	LICHTZOEKEN_X_TO_Y, //draaien van x naar y ass
-	LICHTZOEKEN_Y,		//lopen op y ass
-	LICHTZOEKEN_Y_TO_X,	//draaien van y naar x ass
-	LICHTZOEKEN_DONE,	//als klaar dan staat hij hier
+	LICHTZOEKEN_STARTING,  //zoeken naar een verschil van licht
+	LICHTZOEKEN_GRADIENT,   //draaien van x naar y ass
+	LICHTZOEKEN_TURNING,	//draaien naar de volgende ass
+	LICHTZOEKEN_DONE,	  //als klaar dan staat hij hier
 
 	DANCE
 };

@@ -52,7 +52,6 @@ void DrivingController::setMovement(int leftSpeed, int rightSpeed, int time){
 	this->motorL->setSpeed(leftSpeed);
 	this->motorR->setSpeed(rightSpeed);
 	unsigned long curMils = millis();
-	Serial.println(curMils);
 	this->startMillis = curMils;
 	this->toGoTime = time;
 	targetDegree = -1;

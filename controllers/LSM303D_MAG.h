@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <math.h>
+#include "Util.h"
 
 enum Direction{
 	N, WN, W, SW, S, ES, E, NE
@@ -33,17 +34,16 @@ class LSM303DMag {
 		void writeReg(byte reg, byte value);
 		unsigned long lastUpdate;
 		bool isReceiving;
-
-
+		void ( *callback )( void );
 		float minX , maxX, minY, maxY;
+		int lastVal;
 	public:
 		LSM303DMag(void);
 		void update();
 		Direction heading();
 		int hoek;//public so it can be referensed to DrivingControllers
 		int getHoek(){return this->hoek;};
-
-
+		void setValueChangeCallback(void( * )( void ));
 };
 
 #endif
