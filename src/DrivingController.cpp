@@ -21,8 +21,8 @@ DrivingController::DrivingController(int &hoekRef) : huidiggeDraaing(hoekRef){
 
 void DrivingController::update(){
 	if(targetDegree != -1){//we using turned movement
-		int rightBorder = add360(targetDegree, 5);
-		int leftBorder = add360(targetDegree, -5);
+		int rightBorder = add360(targetDegree, 15);
+		int leftBorder = add360(targetDegree, -15);
 		if( between360(this->huidiggeDraaing, leftBorder, rightBorder)){
 			stopRouteExecution();
 			if(this->callback != 0)
@@ -61,12 +61,12 @@ void DrivingController::setTurn(int degree){
 	this->targetDegree = degree;
 
 	if(degree < 0){ //go left
-		this->motorL->setSpeed(0);
+		this->motorL->setSpeed(-60);
 		this->motorR->setSpeed(60);
 		this->targetDegree = add360(this->huidiggeDraaing, -1*degree);
 	}else if(degree > 0){ //go right
 		this->motorL->setSpeed(60);
-		this->motorR->setSpeed(0);
+		this->motorR->setSpeed(-60);
 		this->targetDegree = add360(this->huidiggeDraaing, -1*degree);
 	}else{
 		//it would be verry stupid if you did this.

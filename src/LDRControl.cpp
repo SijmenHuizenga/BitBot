@@ -29,8 +29,9 @@ int LightDependentResistor::getRawValue() {
 }
 
 void LightDependentResistor::update(){
-	if(this->lastVal != getLuxValue()){
-		this->lastVal = getLuxValue();
+	int curLuxVal = getLuxValue();
+	if(abs(this->lastVal - curLuxVal) > 5){
+		this->lastVal = curLuxVal;
 		this->callback();
 	}
 }

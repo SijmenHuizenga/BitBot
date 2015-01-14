@@ -58,5 +58,4 @@ void DataLogger::logData(int luxVal, int tempVal, int magValue, int leftSpeed, i
 	data[i][2] = map(magValue, 0, 360, 0, 255);
 	data[i][3] = leftSpeed+100;
 	data[i][4] = rightSpeed+100;
-	serialDumpRow(i);
 }

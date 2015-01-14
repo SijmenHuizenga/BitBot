@@ -27,14 +27,13 @@ DataLogger* logger;
 //wat is de huidigge bitbot status?
 BitBotState status;
 
-//welke status was er voor de botsing?
-BitBotState voorBotsingStatus;
-
 //hoeveel moet bij NABOTSING_DRAAIEN_TERUG gedraad worden?
 int returnDegree;
 
 //gebruikt tijdens het zoeken naar licht
 int lastLightValue;
+//op welke as ben ik aan het zoeken?
+Axis as;
 
 //gebruikt voor check of licht/temp ineens zijn verandert.
 int lastDegree = 0;
@@ -78,10 +77,13 @@ void setup() {
 
 	logger = new DataLogger();
 
+	delay(3000);
+
 	status = LICHTZOEKEN_STARTING;
+	as = X_AXES;
 	lastLightValue = ldr->getLuxValue();
 	Serial.println("initial lux value: "  + String(lastLightValue));
-	drivingController->setMovement(80, 80, 1000);
+	drivingController->setMovement(80, 80, 2000);
 }
 
 void loop() {
@@ -89,6 +91,7 @@ void loop() {
 	therm->update();
 	spriet->update();
 	magMeter->update();
+	ldr->update();
 
 	//dan output
 	drivingController->update();
@@ -107,7 +110,7 @@ void movementFinish(){
 			break;
 		case NABOTSING_DRAAIEN_A:
 			status = NABOTSING_VOORUIT;
-			drivingController->setMovement(50, 50, 1000);
+			drivingController->setMovement(50, 50, 2000);
 			break;
 		case NABOTSING_VOORUIT:
 			status = NABOTSING_DRAAIEN_B;
@@ -115,35 +118,45 @@ void movementFinish(){
 			returnDegree = 0;
 			break;
 		case NABOTSING_DRAAIEN_B:
-			status = voorBotsingStatus;
-			if(status == LICHTZOEKEN_STARTING){
-				lastLightValue = -1;
-				movementFinish();
-			}
+			//botsing kan alleen geregeistreerd worden tijdens status LICHTZOEKEN_GRADIENT
+			status = LICHTZOEKEN_GRADIENT;
+			lastLightValue = 0;
+			movementFinish();
+
 			break;
 		case LICHTZOEKEN_STARTING:
 			if(lastLightValue == -1){//overniuw beginnen
 				Serial.println("We just turned, now we are the right way");
 				lastLightValue = ldr->getLuxValue();
-				drivingController->setMovement(80, 80, 1000);
-			}
-			if(curLightVal > lastLightValue){
+				drivingController->setMovement(80, 80, 2000);
+			}else if(curLightVal > lastLightValue){
 				Serial.println("first light value: " + String(curLightVal) + " so we are the right way");
 				status = LICHTZOEKEN_GRADIENT;
-				matrix->drawSmiley(true);
+				lastLightValue = 0;
+				movementFinish();
 				//start lichtzoeken
 			}else if(curLightVal < lastLightValue){
 				Serial.println("first light value: " + String(curLightVal) + " so we are turning");
-				drivingController->setTurn(-220);
+				drivingController->setTurn(180);
 				lastLightValue = -1;//begin overniuw
 			}else{
 				Serial.println("Could not find any light. I am sorry.");
-				status = DANCE;
+				drivingController->stopRouteExecution();
+				//status = DANCE;
 			}
 			break;
 		case DANCE:
 			matrix->drawSmiley(random(0,1));
-			drivingController->setTurn(random(-359, 359));
+			drivingController->setTurn(random(-180, 180));
+			break;
+		case LICHTZOEKEN_TURNING:
+			status = LICHTZOEKEN_STARTING;
+			lastLightValue = ldr->getLuxValue();
+			Serial.println("initial new lux value: "  + String(lastLightValue));
+			drivingController->setMovement(80, 80, 2000);
+			break;
+		case LICHTZOEKEN_GRADIENT:
+			drivingController->setMovement(60, 60, 32767);
 			break;
 		default:
 			break;
@@ -153,12 +166,9 @@ void movementFinish(){
 //callback twee voelsprieten
 void sprietCallback(){
 	bool isAganstWall = !spriet->getState();
-	if(isAganstWall){
-		if(status == NABOTSING_ACHTERUIT || status == NABOTSING_VOORUIT || status == LICHTZOEKEN_STARTING || status == LICHTZOEKEN_GRADIENT){
-			drivingController->setMovement(-50, -50, 1000);
-			voorBotsingStatus = status;
-			status = NABOTSING_ACHTERUIT;
-		}
+	if(isAganstWall && status == LICHTZOEKEN_GRADIENT){
+		drivingController->setMovement(-50, -50, 2000);
+		status = NABOTSING_ACHTERUIT;
 	}
 }
 
@@ -168,16 +178,33 @@ void thermCallback(){
 }
 
 void ldrCallback(){
+	if(status == LICHTZOEKEN_GRADIENT){
+		if(ldr->getLuxValue() <= lastLightValue){
+			if(as == X_AXES){
+				as = Y_AXES;
+				status = LICHTZOEKEN_TURNING;
+				drivingController->setTurn(90);
+			}else if(as == Y_AXES){
+				as = DONE_AXES;
+				drivingController->stopRouteExecution();
+				status = LICHTZOEKEN_DONE;
+			}
 
+		}else{
+			lastLightValue = ldr->getLuxValue();
+		}
+	}
 }
 
 /**
- * contoroleren of de temeratuur of licht ineens is gedaald én loggen!
+ * Contoroleren of de temeratuur of licht ineens is gedaald én loggen!
  */
 void fiveSecondCallback(){
-	if(lastDegree != 0 && (abs(lastDegree - therm->getCurDegrees()) <= -5 || abs(lastLight - ldr->getLuxValue()) <= -5)){
+	if(lastDegree != 0 && ((lastDegree - therm->getCurDegrees()) > 5 || (lastLight - ldr->getLuxValue()) > 5)){
+		Serial.println("Drop in temeratuur of licht: sad panda");
 		matrix->drawSmiley(false);
 	}else if(therm->getCurDegrees()>23){
+		Serial.println("temperatuur boven 23 graden: happy!");
 		matrix->drawSmiley(true);
 	}else{
 		matrix->drawEmptyness();

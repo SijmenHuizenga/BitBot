@@ -25,5 +25,11 @@ enum BitBotState{
 	DANCE
 };
 
+enum Axis{
+	X_AXES,
+	Y_AXES,
+	DONE_AXES
+};
+
 
 #endif /* HEADERS_BITBOTSATES_H_ */
