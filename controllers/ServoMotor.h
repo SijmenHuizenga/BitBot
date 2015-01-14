@@ -60,6 +60,13 @@ class ServoMotor{
      * sets the raw speed of the servo. Shoud be between 0 and 180.
      */
     void setRawSpeed(int);
+
+    /**
+     * get the current speed of the motor;
+     */
+    int getCurSpeed(){
+    	return this->curSpeed;
+    }
 };
 
 #endif /* HEADERS_SERVOMOTOR_H_ */

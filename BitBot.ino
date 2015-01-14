@@ -9,6 +9,7 @@
 #include "Thermometer.h"
 #include "Led.h"
 #include "TimedAction.h"
+#include "DataLogger.h"
 
 DrivingController* drivingController;
 LightDependentResistor* ldr;
@@ -21,16 +22,21 @@ Buzzer* buzz;
 
 TimedAction* fiveSecondTimer;
 
+DataLogger* logger;
+
 //wat is de huidigge bitbot status?
 BitBotState status;
 
 //welke status was er voor de botsing?
 BitBotState voorBotsingStatus;
+
 //hoeveel moet bij NABOTSING_DRAAIEN_TERUG gedraad worden?
 int returnDegree;
 
+//gebruikt tijdens het zoeken naar licht
 int lastLightValue;
 
+//gebruikt voor check of licht/temp ineens zijn verandert.
 int lastDegree = 0;
 int lastLight = 0;
 
@@ -70,6 +76,8 @@ void setup() {
 	fiveSecondTimer->setCallback(fiveSecondCallback);
 	fiveSecondTimer->setDelay(5000);
 
+	logger = new DataLogger();
+
 	status = LICHTZOEKEN_STARTING;
 	lastLightValue = ldr->getLuxValue();
 	Serial.println("initial lux value: "  + String(lastLightValue));
@@ -85,6 +93,7 @@ void loop() {
 	//dan output
 	drivingController->update();
 	buzz->update();
+	fiveSecondTimer->update();
 }
 
 //callback:
@@ -155,7 +164,6 @@ void sprietCallback(){
 
 void thermCallback(){
 	//zie formule: https://github.com/SijmenHuizenga/BitBot/issues/8
-	Serial.println(therm->getCurDegrees());
 	buzz->setOffTime((30-therm->getCurDegrees())*100);
 }
 
@@ -163,8 +171,11 @@ void ldrCallback(){
 
 }
 
+/**
+ * contoroleren of de temeratuur of licht ineens is gedaald én loggen!
+ */
 void fiveSecondCallback(){
-	if(lastDegree != 0 && (abs(lastDegree - therm->getCurDegrees()) > 5 || abs(lastLight - ldr->getLuxValue()) > 5)){
+	if(lastDegree != 0 && (abs(lastDegree - therm->getCurDegrees()) <= -5 || abs(lastLight - ldr->getLuxValue()) <= -5)){
 		matrix->drawSmiley(false);
 	}else if(therm->getCurDegrees()>23){
 		matrix->drawSmiley(true);
@@ -173,8 +184,14 @@ void fiveSecondCallback(){
 	}
 	lastDegree = therm->getCurDegrees();
 	lastLight = ldr->getLuxValue();
+
+	logger->logData(ldr->getLuxValue(), therm->getCurDegrees(), magMeter->getHoek(),
+			drivingController->motorL->getCurSpeed(), drivingController->motorR->getCurSpeed());
 }
 
+/**
+ * compas veranderd richting
+ */
 void compassCallback(){
 	for(int i = 0; i < 8; i++)
 		leds->setLedOn(i, false);

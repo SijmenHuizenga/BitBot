@@ -11,7 +11,7 @@
 class TimedAction{
 	private:
 		unsigned long lastMils;
-		unsigned int delay();
+		unsigned int delay;
 		void ( *callback )( void );
 	public:
 		TimedAction();

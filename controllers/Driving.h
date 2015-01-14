@@ -23,11 +23,8 @@ const byte MOTOR_R_PIN = 12;
 
 
 class DrivingController {
-	public:
+	private:
 		int &huidiggeDraaing;
-
-		ServoMotor* motorL;
-		ServoMotor* motorR;
 
 		void (*callback)();
 
@@ -35,6 +32,10 @@ class DrivingController {
 		int toGoTime;
 
 		unsigned long startMillis;
+	public:
+		//zodat de logger de data kan uitlezen
+		ServoMotor* motorL;
+		ServoMotor* motorR;
 	public:
 		/**
 		 * initializer. Als argument een verwijzing naar een int

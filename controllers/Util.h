@@ -31,6 +31,4 @@ static bool between360(int x, int min, int max){
 	return x < max && x > min;
 }
 
-
-
 #endif /* CONTROLLERS_UTIL_H_ */

@@ -5,9 +5,13 @@
  *      Author: Sijmen
  */
 
+#include "TimedAction.h"
+#include "Arduino.h"
+
 TimedAction::TimedAction(){
 	this->callback = 0;
 	this->lastMils = 0;
+	this->delay = 500;
 }
 
 void TimedAction::setCallback(void ( *callback )( void )){
@@ -20,7 +24,7 @@ void TimedAction::setDelay(unsigned int newDelay){
 
 void TimedAction::update(){
 	unsigned long curMils = millis();
-	if(lastMils + delay >= curMils){
+	if(curMils - lastMils > delay){
 		if(this->callback != 0)
 			this->callback();
 		lastMils = curMils;
