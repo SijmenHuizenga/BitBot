@@ -238,6 +238,3 @@ void compassCallback(){
 			break;
 	}
 }
-
-
-
