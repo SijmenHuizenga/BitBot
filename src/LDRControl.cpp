@@ -17,9 +17,6 @@ void LightDependentResistor::setValueChangeCallback(void(*call)(void)){
 	this->callback = call;
 }
 
-/**
- * We gaan er van uit dat lux tussen 0 en 100 gaat.
- */
 int LightDependentResistor::getLuxValue() {
 	return map(constrain(analogRead(this->pin),this->min, this->max), this->min, this->max, 100, 0);
 }

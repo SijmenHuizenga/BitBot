@@ -8,7 +8,9 @@
 #ifndef HEADERS_BITBOTSATES_H_
 #define HEADERS_BITBOTSATES_H_
 
-
+/**
+ * de verschillende statiussen in de bitbot
+ */
 enum BitBotState{
 	//Bij botsing moet robot:
 	NABOTSING_ACHTERUIT, 	//een stukje achteruit
@@ -25,6 +27,9 @@ enum BitBotState{
 	DANCE
 };
 
+/**
+ * de assen : XYD
+ */
 enum Axis{
 	X_AXES,
 	Y_AXES,

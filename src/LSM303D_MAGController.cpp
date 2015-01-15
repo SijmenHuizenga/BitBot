@@ -13,10 +13,7 @@ LSM303DMag::LSM303DMag(void) {
 	lastUpdate = 0;
 	isReceiving = false;
 
-	minX = -1811;
-	maxX = 3102;
-	minY = -2548;
-	maxY = 1573;
+
 	lastVal = -1;
 }
 

@@ -20,8 +20,10 @@ LedMatrix* matrix;
 AntiBounceButton* spriet;
 Buzzer* buzz;
 
+//een timer van vijf seconden
 TimedAction* fiveSecondTimer;
 
+//de data logging systeem van de bitbot
 DataLogger* logger;
 
 //wat is de huidigge bitbot status?
@@ -65,7 +67,6 @@ void setup() {
 	drivingController->setFinishCallback(movementFinish);
 
 	leds = new LedController();
-	leds->initilize();
 
 	buzz = new Buzzer(11);
 	buzz->setTone(494);
@@ -86,6 +87,11 @@ void setup() {
 	drivingController->setMovement(80, 80, 2000);
 }
 
+/**
+ * (meolodie "hoor wie klopt daar kinderen")
+ * hoor wie crasht daar kinderen, hoor wie crasht daar kinderen, hoor wie
+ * stop daar zatchjes uit het niets? Arduinoooo, Arduinoooooo
+ */
 void loop() {
 	//eerst input
 	therm->update();
@@ -122,7 +128,6 @@ void movementFinish(){
 			status = LICHTZOEKEN_GRADIENT;
 			lastLightValue = 0;
 			movementFinish();
-
 			break;
 		case LICHTZOEKEN_STARTING:
 			if(lastLightValue == -1){//overniuw beginnen
@@ -172,11 +177,13 @@ void sprietCallback(){
 	}
 }
 
+//callback bij verandering van temepratuur
 void thermCallback(){
 	//zie formule: https://github.com/SijmenHuizenga/BitBot/issues/8
 	buzz->setOffTime((30-therm->getCurDegrees())*100);
 }
 
+//callback bij verandering vna licht
 void ldrCallback(){
 	if(status == LICHTZOEKEN_GRADIENT){
 		if(ldr->getLuxValue() <= lastLightValue){
@@ -196,9 +203,7 @@ void ldrCallback(){
 	}
 }
 
-/**
- * Contoroleren of de temeratuur of licht ineens is gedaald én loggen!
- */
+//Contoroleren of de temeratuur of licht ineens is gedaald én loggen!
 void fiveSecondCallback(){
 	if(lastDegree != 0 && ((lastDegree - therm->getCurDegrees()) > 5 || (lastLight - ldr->getLuxValue()) > 5)){
 		Serial.println("Drop in temeratuur of licht: sad panda");
@@ -216,9 +221,7 @@ void fiveSecondCallback(){
 			drivingController->motorL->getCurSpeed(), drivingController->motorR->getCurSpeed());
 }
 
-/**
- * compas veranderd richting
- */
+//callback voor het veranderen van draaing
 void compassCallback(){
 	for(int i = 0; i < 8; i++)
 		leds->setLedOn(i, false);

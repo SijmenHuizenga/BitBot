@@ -21,19 +21,37 @@
 const byte MOTOR_L_PIN = 13;
 const byte MOTOR_R_PIN = 12;
 
-
 class DrivingController {
 	private:
+		/**
+		 * een verwijzing naar een getal dat de draaing weergeeft
+		 */
 		int &huidiggeDraaing;
 
+		/**
+		 * functie die moet worden aangeroepen als de draaing verandert
+		 */
 		void (*callback)();
 
+		/**
+		 * ik ben aan het draaien, en dit is het aantal graden waar ik naartoe moet
+		 */
 		int targetDegree; // -1 = using time
+
+		/**
+		 *ik ben een tijd aan het rijden, en dit is de tijd die ik moet rijden
+		 */
 		int toGoTime;
 
+		/**
+		 * ik ben aan het rijden, en dit is de tijd waarop ik gestart ben met rijden
+		 */
 		unsigned long startMillis;
 	public:
-		//zodat de logger de data kan uitlezen
+		/**
+		 * De fizieke motoren
+		 * public zodat de logger de data kan uitlezen
+		 */
 		ServoMotor* motorL;
 		ServoMotor* motorR;
 	public:
@@ -46,8 +64,7 @@ class DrivingController {
 
 		/**
 		 * Deze functie zou minstens elke miliseconden moeten worden
-		 * aangeroepen. Vaker maakt niks uit. Deze functie houdt de
-		 * thread niet vast.
+		 * aangeroepen. Vaker maakt niks uit.
 		 */
 		void update();
 

@@ -42,8 +42,8 @@ AntiBounceButton::AntiBounceButton(byte pin){
 	this->pin = pin;
 	this->callback = 0;
 	this->state = RELEASED;
-	this->msBounceCheck = 10;
 	this->bounceCheckStart = 0;
+	this->msBounceCheck = 10;
 	pinMode(this->pin, INPUT);
 }
 

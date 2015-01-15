@@ -18,12 +18,34 @@ class DataLogger{
 		//3: leftSpeed between -100 and 100. This value is scaled to 0 and 200
 		//4: rightspeed between -100 and 100. This value is scaled to 0 and 200
 		byte** data;
+
+		/**
+		 * de hoeveelheid rows of data die kunnen worden bijgehouden
+		 */
 		static const int amount = 10;
 	public:
+		/**
+		 * conostructor. Initializeert de data arrays
+		 */
 		DataLogger();
+		/**
+		 * dump alle tot nu toe verzamelde data in de serial
+		 */
 		void serialDump();
+
+		/**
+		 * dump een row in de serial
+		 */
 		void serialDumpRow(int);
+
+		/**
+		 * leeg alle data
+		 */
 		void clearData();
+
+		/**
+		 * log een nieuwe row met data
+		 */
 		void logData(int luxVal, int tempVal, int magValue, int leftSpeed, int rightSpeed);
 };
 

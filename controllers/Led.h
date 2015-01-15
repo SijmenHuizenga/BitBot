@@ -12,13 +12,34 @@
 
 class LedController{
     private:
+	  /**
+	   * de fiezieke pins op de arduino
+	   */
       byte pins[8];
     public:
+      /**
+       * constructor.
+       */
       LedController();
-      void initilize();
+
+      /**
+       * zet een bepaalde led aan
+       */
       void setLedOn(byte, boolean);
+
+      /**
+       * zet alle leds uit
+       */
       void resetLights();
+
+      /**
+       * hoeveel leds zijn er?
+       */
       int getLedAmount();		
+
+      /**
+       * geef een string met alle statussen van de leds
+       */
       String getCurState();
 };
 

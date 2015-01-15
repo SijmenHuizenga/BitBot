@@ -17,13 +17,10 @@ LedController::LedController(){
   pins[5] = 7;
   pins[6] = 8;
   pins[7] = 9;
-}
-
-void LedController::initilize(){
   for(int i = 0; i < getLedAmount(); i++){
-    pinMode(pins[i], OUTPUT);
-  }
-};
+      pinMode(pins[i], OUTPUT);
+    }
+}
 
 void LedController::setLedOn(byte ledNr, boolean onOrOff){
   digitalWrite(pins[ledNr], onOrOff ? HIGH : LOW);
