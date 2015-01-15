@@ -14,10 +14,7 @@ De uitwerking van deze klasse (de .cpp bestanden) zijn te vinden in het mapje `s
 
 Op een aantal plekken zitten variable die verandert zouden kunnen worden in het geval van een andere robot.
 De variabele zijn te vinden op de plek waar de bijbehorden de code te vinden is. Het getal dat aangeeft op welke pin
-de linker motor is aangesloten, is bijvoorbeeld te vinden in het bestand `headers/LocationManager.h`. De location manager is projectspecefiek
-én heeft te maken met de aansturing van de bitbot. Hieronder is een lijst met dit soort variabelen en locaties:
-
-Motor Pin: `headers/LocationManager.h` => MOTOR_L_PIN & MOTOR_R_PIN
+de linker motor is aangesloten, is bijvoorbeeld te vinden in het bestand `headers/LocationManager.h`. De location manager is projectspecefiek.
 
 
 Opdracht
