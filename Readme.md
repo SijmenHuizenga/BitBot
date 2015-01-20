@@ -12,3 +12,6 @@ Alle informatie over dit project is te vinden op de wiki van dit project. Dit is
 * [Mijn uitwerking van LSM303D](https://github.com/SijmenHuizenga/BitBot/wiki/LSM303D)
 
 
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=A6OPI_RDbGY
+" target="_blank"><img src="http://img.youtube.com/vi/A6OPI_RDbGY/0.jpg" 
+alt="BitBot Trailer" width="240" height="180" border="10" /></a>
