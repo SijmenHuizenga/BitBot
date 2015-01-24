@@ -147,6 +147,7 @@ void movementFinish(){
 			}else{
 				Serial.println("Could not find any light. I am sorry.");
 				drivingController->stopRouteExecution();
+				status =LICHTZOEKEN_DONE;
 				//status = DANCE;
 			}
 			break;
